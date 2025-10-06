@@ -5,6 +5,7 @@ import torch
 from torchvision import transforms
 import json
 import os
+# import torch.nn as nn # Раскомментировать при ДОобучении модели
 
 # Настройки страницы
 st.set_page_config(
@@ -24,14 +25,29 @@ with col2:
 st.markdown("### 📸 Загрузите фото повреждённого автомобиля")
 st.write("Модель автоматически оценит стоимость ремонта в рублях.")
 
+# РАСкомментировать при Дообучении модели
+# def create_efficientnet_model():
+#    model = models.efficientnet_b0()
+#    model.classifier[1] = nn.Linear(model.classifier[1].in_features, 1)
+#    return model
+
 # Загрузка модели (кешируется)
 @st.cache_resource
 def load_model():
+# Закомментировать при ДОобучении модели
     model = torch.jit.load("car_damage_model_ef.pt")
     model.eval()
     with open("norm_params_ef.json") as f:
         norm_params = json.load(f)
     return model, norm_params
+
+# Установтиь после ДОобучения модели
+#    model = create_efficientnet_model()
+#    model.load_state_dict(torch.load("car_damage_model_ef.pth", map_location="cpu", weights_only=True))
+#    model.eval()
+#    with open("norm_params_ef.json") as f:
+#        norm_params = json.load(f)
+#    return model, norm_params
 
 model, norm_params = load_model()
 
@@ -99,3 +115,8 @@ if uploaded_file is not None:
 # Подвал
 st.markdown("---")
 st.caption("© 2025 CarFix AI | Технология оценки повреждений автомобилей")
+
+# Команды в терминале для отправки нужных файлов в Git ПОСЛЕ ДОобучения модели
+# git add car_damage_model_ef.pth norm_params_ef.json app.py
+# git commit -m "feat: обновлена модель после дообучения на новых данных"
+# git push origin main
